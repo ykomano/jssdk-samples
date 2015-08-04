@@ -65,6 +65,7 @@ $(document).ready(function() {
   var month = ("0" + (new Date().getMonth() + 1)).substr(-2);
   var date = ("0" + new Date().getDate()).substr(-2);
   var today = year + month + date;
+  today = "20150803";
 
   Kii.initializeWithSite("48fa17c2", "4275bba17c2fb37876e72aef22d81be0", KiiSite.JP)
   var bucket = Kii.bucketWithName("line");
