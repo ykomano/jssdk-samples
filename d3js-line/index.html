@@ -82,7 +82,10 @@ $(document).ready(function() {
       }
     
       x.domain(d3.extent(data, function(d) { return d.date; }));
-      y.domain(d3.extent(data, function(d) { return d.temperature; }));
+      var yDomain = d3.extent(data, function(d) { return d.temperature; });
+      if (yDomain[0] >  0) { yDomain[0] =  0; }
+      if (yDomain[1] < 40) { yDomain[1] = 40; }
+      y.domain(yDomain);
     
       svg.append("g")
           .attr("class", "x axis")
