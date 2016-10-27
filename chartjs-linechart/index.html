@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+</style>
+<body>
+
+<canvas id="stage"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="kiisdk.js"></script>
+<script>
+
+$(document).ready(function() {
+  var year = "" + new Date().getFullYear();
+  var month = ("0" + (new Date().getMonth() + 1)).substr(-2);
+  var date = ("0" + new Date().getDate()).substr(-2);
+  var today = year + month + date;
+  today = "20150803";
+
+  Kii.initializeWithSite("48fa17c2", "4275bba17c2fb37876e72aef22d81be0", KiiSite.JP)
+  var bucket = Kii.bucketWithName("line");
+  bucket.createObjectWithID(today).refresh().then(
+    function(obj) {
+      var json = obj.get("data");
+
+      var data = [];
+      for(var time in json) {
+        data.push({
+          x: today + 'T' + time, // http://momentjs.com/docs/#/parsing/string/
+          y: json[time].temperature
+        });
+      }
+
+      var canvas = document.getElementById('stage');
+      var scatterChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Temperature',
+            data: data
+          }]
+        },
+        options: {
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              type: 'time', // http://www.chartjs.org/docs/#scales-time-scale
+              time: {
+                unit: 'minute',
+                unitStepSize: 5,
+                displayFormats: {
+                  minute: 'HH:mm' // http://momentjs.com/docs/#/displaying/format/
+                }
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 40
+              }
+            }]
+          }
+        }
+      });
+    },
+    function(error) {
+    });
+});
+
+</script>
+</body>
